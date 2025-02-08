@@ -1,22 +1,21 @@
-'use client'
-import React, { useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+"use client";
+import React, { useActionState } from "react";
+import { login } from "@/app/actions/auth";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock } from 'lucide-react';
-import Link from 'next/link';
+import { Mail, Lock } from "lucide-react";
+import Link from "next/link";
 
 const LoginPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-  };
+  const [state, action, pending] = useActionState(login, undefined);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/95 p-4">
@@ -28,7 +27,7 @@ const LoginPage = () => {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form action={action} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-zinc-200">
                 Email
@@ -50,7 +49,10 @@ const LoginPage = () => {
                 <Label htmlFor="password" className="text-zinc-200">
                   Password
                 </Label>
-                <a href="#" className="text-sm text-blue-400 hover:text-blue-300">
+                <a
+                  href="#"
+                  className="text-sm text-blue-400 hover:text-blue-300"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -65,19 +67,19 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              disabled={isLoading}
+              disabled={pending}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {pending ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </CardContent>
 
         <CardFooter className="flex justify-center">
           <p className="text-sm text-zinc-400">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link href="/signup" className="text-blue-400 hover:text-blue-300">
               Sign up
             </Link>
@@ -88,4 +90,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage
+export default LoginPage;

@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import {
+  QueryClientProvider,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,6 +27,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  });
+
   return (
     <html lang="en">
       <body

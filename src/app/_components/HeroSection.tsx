@@ -19,7 +19,7 @@ const HeroSection = () => {
         </h1>
         
         <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-          TickTick helps you manage tasks, collaborate with teams, 
+          Prodo helps you manage tasks, collaborate with teams, 
           and achieve more with less stress.
         </p>
         

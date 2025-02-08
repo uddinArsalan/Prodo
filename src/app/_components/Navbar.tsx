@@ -10,7 +10,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-3">
           <CheckCircle className="w-8 h-8 text-primary" strokeWidth={2.5} />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            TickTick
+            Prodo
           </h1>
         </div>
         
