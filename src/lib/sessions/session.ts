@@ -19,6 +19,7 @@ export async function setAccessTokenCookies(accessToken: string) {
     secure: process.env.NODE_ENV === "production",
     expires: accessTokenExpiry,
     sameSite: "lax",
+    maxAge :  1 * 60 * 60 * 1000,
     path: "/",
   });
 }
@@ -30,6 +31,7 @@ export async function setRefreshTokenCookies(refreshToken: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     expires: refreshTokenExpiry,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: "lax",
     path: "/",
   });
@@ -77,20 +79,35 @@ export async function verifyRefreshToken(token: string) {
 
 export async function refreshAccessToken() {
   const cookieStore = await cookies();
-  if (!cookieStore.has("refreshToken")) {
+  const refreshToken = cookieStore.get("refreshToken")?.value;
+
+  if (!refreshToken) {
+    await clearTokens();
+    return null;
   }
-  const cookie = cookieStore.get("refreshToken");
-  const decodedToken = await verifyRefreshToken(cookie?.value!);
+
+  const decodedToken = await verifyRefreshToken(refreshToken);
+  if (!decodedToken?.userId) {
+    await clearTokens();
+    return null;
+  }
+
   const [user] = await db
     .select()
     .from(userModel)
-    .where(eq(userModel.id, decodedToken?.id as number))
+    .where(eq(userModel.id, decodedToken.userId as number))
     .limit(1);
-  if (!user) {
+
+  if (!user || user.refreshToken != refreshToken) {
+    await clearTokens();
+    return null;
   }
 
-  const accessToken = await generateAccessToken(user.id);
-  const refreshToken = await generateRefreshToken(user.id);
-  await setAccessTokenCookies(accessToken);
-  await setRefreshTokenCookies(refreshToken);
+  const newAccessToken = await generateAccessToken(user.id);
+  const newRefreshToken = await generateRefreshToken(user.id);
+
+  await setAccessTokenCookies(newAccessToken);
+  await setRefreshTokenCookies(newRefreshToken);
+
+  return newAccessToken;
 }

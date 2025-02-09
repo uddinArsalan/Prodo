@@ -1,5 +1,5 @@
 "use client";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { useFormState } from "react-dom";
 import {
   Card,
@@ -13,10 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock } from "lucide-react";
 import { signup } from "@/app/actions/auth";
+import { useRouter } from "next/navigation";
 
 const SignupPage = () => {
   const [state, action, pending] = useActionState(signup, undefined);
-  
+  const router = useRouter();
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [state]);
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/95 p-4">
       <Card className="w-full max-w-md bg-zinc-900 border-zinc-800">
@@ -34,11 +41,14 @@ const SignupPage = () => {
               </Label>
               <Input
                 id="name"
+                name="name"
                 placeholder="John Doe"
                 className="bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-600"
                 required
               />
-              {state?.errors?.name && <p>{state.errors.name}</p>}
+              {state?.errors?.name && (
+                <p className="text-red-400">{state.errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -49,13 +59,16 @@ const SignupPage = () => {
                 <Mail className="absolute left-3 top-3 h-5 w-5 text-zinc-400" />
                 <Input
                   id="email"
+                  name="email"
                   placeholder="name@example.com"
                   type="email"
                   className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-600"
                   required
                 />
               </div>
-              {state?.errors?.email && <p>{state.errors.email}</p>}
+              {state?.errors?.email && (
+                <p className="text-red-400">{state.errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -67,6 +80,7 @@ const SignupPage = () => {
                 <Input
                   id="password"
                   type="password"
+                  name="password"
                   className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-600"
                   required
                 />
@@ -76,7 +90,9 @@ const SignupPage = () => {
                   <p>Password must:</p>
                   <ul>
                     {state.errors.password.map((error) => (
-                      <li key={error}>- {error}</li>
+                      <li className="text-red-400" key={error}>
+                        - {error}
+                      </li>
                     ))}
                   </ul>
                 </div>

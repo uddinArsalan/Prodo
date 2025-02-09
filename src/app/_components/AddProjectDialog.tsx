@@ -2,27 +2,48 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useCreateProjectMutation } from "@/hooks/mutations/useCreateProjectMutation";
 
 export function AddProjectDialog() {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
+  const [deadline, setDeadline] = useState<Date | undefined>(undefined);
+  const { createProjectMutation } = useCreateProjectMutation({
+    closeModal: () => setOpen(false),
+  });
 
   const handleSubmit = () => {
-    console.log("Project Added:", { name, description, dueDate });
+    console.log("Project Added:", { title, description, deadline });
+    createProjectMutation.mutate({
+      title,
+      description,
+      deadline: deadline ? deadline : null,
+    });
     setOpen(false);
-    setName("");
+    setTitle("");
     setDescription("");
-    setDueDate(undefined);
+    setDeadline(undefined);
   };
 
   return (
@@ -36,13 +57,15 @@ export function AddProjectDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Project</DialogTitle>
-          <DialogDescription>Create a new project to organize your tasks.</DialogDescription>
+          <DialogDescription>
+            Create a new project to organize your tasks.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Input
             placeholder="Project Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <Textarea
             placeholder="Project Description"
@@ -55,18 +78,22 @@ export function AddProjectDialog() {
                 variant="outline"
                 className={cn(
                   "w-full justify-start text-left font-normal",
-                  !dueDate && "text-muted-foreground"
+                  !deadline && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2 size-4" />
-                {dueDate ? format(dueDate, "PPP") : <span>Select Due Date</span>}
+                {deadline ? (
+                  format(deadline, "PPP")
+                ) : (
+                  <span>Select Due Date</span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={dueDate}
-                onSelect={setDueDate}
+                selected={deadline}
+                onSelect={setDeadline}
                 initialFocus
               />
             </PopoverContent>

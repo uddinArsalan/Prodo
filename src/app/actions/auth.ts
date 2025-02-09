@@ -14,7 +14,9 @@ import {
   generateRefreshToken,
   setAccessTokenCookies,
   setRefreshTokenCookies,
+  verifyRefreshToken,
 } from "@/lib/sessions/session";
+import { cookies } from "next/headers";
 
 export async function signup(state: FormState, formData: FormData) {
   // validating fields
@@ -91,6 +93,21 @@ export async function login(state: FormState, formData: FormData) {
   return { success: true, redirectTo: "/dashboard" };
 }
 
-export async function logout(){
-  await clearTokens()
-} 
+export async function logout() {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refreshToken")?.value;
+
+  if (!refreshToken) {
+    throw new Error("No refresh token found");
+  }
+  let decodedToken = await verifyRefreshToken(refreshToken);
+  let userId = decodedToken?.userId as unknown as number;
+  if (!userId) {
+    throw new Error("Invalid token payload");
+  }
+  await db
+    .update(userModel)
+    .set({ refreshToken: null })
+    .where(eq(userModel.id, userId));
+  await clearTokens();
+}

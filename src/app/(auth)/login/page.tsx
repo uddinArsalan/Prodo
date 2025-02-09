@@ -1,5 +1,5 @@
 "use client";
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { login } from "@/app/actions/auth";
 import {
   Card,
@@ -13,9 +13,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [state, action, pending] = useActionState(login, undefined);
+  const router = useRouter();
+  useEffect(() => {
+    if (state?.success && state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/95 p-4">
@@ -38,10 +45,14 @@ const LoginPage = () => {
                   id="email"
                   placeholder="name@example.com"
                   type="email"
+                  name="email"
                   className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-600"
                   required
                 />
               </div>
+              {state?.errors?.email && (
+                <p className="text-red-400">{state.errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -61,9 +72,22 @@ const LoginPage = () => {
                 <Input
                   id="password"
                   type="password"
+                  name="password"
                   className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-600"
                   required
                 />
+                {state?.errors?.password && (
+                  <div>
+                    <p>Password must:</p>
+                    <ul>
+                      {state.errors.password.map((error) => (
+                        <li className="text-red-400" key={error}>
+                          - {error}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
 
