@@ -20,8 +20,17 @@ export async function GET(req: NextRequest) {
       .select()
       .from(taskModel)
       .where(eq(taskModel.userId, Number(userId)))
-      .innerJoin(projectModel, eq(projectModel.id, taskModel.projectId));
-    return NextResponse.json({ success: true, data: tasks }, { status: 200 });
+      .leftJoin(projectModel, eq(projectModel.id, taskModel.projectId));
+
+    const transformedTasks = tasks.map((row) => ({
+      ...row.tasks,
+      project: { ...row.projects },
+    }));
+
+    return NextResponse.json(
+      { success: true, data: transformedTasks },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Database error:", err);
     return NextResponse.json(

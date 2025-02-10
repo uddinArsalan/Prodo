@@ -3,19 +3,12 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { User } from "../types";
-import { getUserInfo } from "@/lib/client_data/user";
 import { useAuthStore } from "@/lib/store/AuthStore";
+import { useUser } from "@/hooks/queries/useUser";
 
 const Navbar = () => {
   const { setUserInfo, isLoggedIn, logout } = useAuthStore();
-  const { data: user } = useQuery<User, Error>({
-    queryKey: ["user"],
-    queryFn: getUserInfo,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
+  const { user } = useUser();
   useEffect(() => {
     if (user) setUserInfo(user);
   }, [user]);

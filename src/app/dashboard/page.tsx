@@ -1,31 +1,63 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Calendar, CheckCircle, Clock, List, PieChart, Plus, Settings } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  List,
+  PieChart,
+  Plus,
+  Settings,
+} from "lucide-react";
+import { useTask } from "@/hooks/queries/useTask";
+import { useProject } from "@/hooks/queries/useProject";
+import Link from "next/link";
+import { useMemo } from "react";
+import { TaskType } from "../types";
+import { StatCard } from "../_components/StatCard";
+import { TaskItem } from "../_components/TaskItem";
+import { ProjectProgress } from "../_components/ProjectProgress";
 
 export default function DashboardPage() {
-  const tasks = [
-    { id: 1, title: "Design homepage layout", status: "completed" },
-    { id: 2, title: "Implement task creation feature", status: "in-progress" },
-    { id: 3, title: "Add workout tracking functionality", status: "pending" },
-  ];
+  const { tasks } = useTask();
+
+  const getTotalTasks = (tasks: TaskType[] | undefined) => tasks?.length || 0;
+
+  const getCompletedTasks = (tasks: TaskType[] | undefined) =>
+    tasks?.filter((task) => task.status === "completed").length || 0;
+
+  const getPendingTasks = (tasks: TaskType[] | undefined) =>
+    getTotalTasks(tasks) - getCompletedTasks(tasks);
+
+  const getOverdueTasks = (tasks: TaskType[] | undefined) =>
+    tasks?.filter(
+      (task) =>
+        task.dueDate &&
+        task.status === "pending" &&
+        new Date(task.dueDate) < new Date()
+    ).length || 0;
+
+  const totalTasks = useMemo(() => getTotalTasks(tasks), [tasks]);
+  const totalCompletedTasks = useMemo(() => getCompletedTasks(tasks), [tasks]);
+  const pendingTasks = useMemo(() => getPendingTasks(tasks), [tasks]);
+  const overDueTask = useMemo(() => getOverdueTasks(tasks), [tasks]);
 
   const stats = [
-    { label: "Total Tasks", value: "24", icon: List },
-    { label: "Completed Tasks", value: "12", icon: CheckCircle },
-    { label: "Pending Tasks", value: "8", icon: Clock },
-    { label: "Overdue Tasks", value: "4", icon: Clock },
-  ];
-
-  const projects = [
-    { id: 1, name: "Personal Website", progress: 75 },
-    { id: 2, name: "Task Manager App", progress: 50 },
-    { id: 3, name: "Fitness Tracker", progress: 25 },
+    { label: "Total Tasks", value: totalTasks, icon: List },
+    { label: "Completed Tasks", value: totalCompletedTasks, icon: CheckCircle },
+    { label: "Pending Tasks", value: pendingTasks, icon: Clock },
+    { label: "Overdue Tasks", value: overDueTask, icon: Clock },
   ];
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-2">
@@ -40,22 +72,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-              <stat.icon className="size-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-            </CardContent>
-          </Card>
+          <StatCard key={index} {...stat} />
         ))}
       </div>
 
-      {/* Tasks Overview */}
       <Card>
         <CardHeader>
           <CardTitle>Tasks Overview</CardTitle>
@@ -63,59 +85,57 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {tasks.map((task) => (
-              <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-4">
-                  <CheckCircle className="size-4 text-muted-foreground" />
-                  <span>{task.title}</span>
-                </div>
-                <span className="text-sm text-muted-foreground capitalize">{task.status}</span>
-              </div>
+            {tasks?.map((task) => (
+              <TaskItem key={task.id} task={task} />
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Project Progress */}
       <Card>
         <CardHeader>
           <CardTitle>Project Progress</CardTitle>
-          <CardDescription>Track the progress of your projects.</CardDescription>
+          <CardDescription>
+            Track the progress of your projects.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {projects.map((project) => (
-              <div key={project.id} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{project.name}</span>
-                  <span className="text-sm text-muted-foreground">{project.progress}%</span>
-                </div>
-                <Progress value={project.progress} className="h-2" />
-              </div>
-            ))}
+            <ProjectProgress />
           </div>
         </CardContent>
       </Card>
 
-      {/* Quick Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Button variant="outline" className="h-24 flex-col gap-2">
-          <Calendar className="size-6" />
-          <span>Calendar</span>
-        </Button>
-        <Button variant="outline" className="h-24 flex-col gap-2">
-          <List className="size-6" />
-          <span>Tasks</span>
-        </Button>
-        <Button variant="outline" className="h-24 flex-col gap-2">
-          <PieChart className="size-6" />
-          <span>Analytics</span>
-        </Button>
-        <Button variant="outline" className="h-24 flex-col gap-2">
-          <Settings className="size-6" />
-          <span>Settings</span>
-        </Button>
+          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+            <Link href="/calendar">
+              <div className="flex flex-col items-center gap-2">
+                <Calendar className="size-6" />
+                <span>Calendar</span>
+              </div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+            <Link href="/dashboard/tasks">
+              <div className="flex flex-col items-center gap-2">
+                <List className="size-6" />
+                <span>Tasks</span>
+              </div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+            <Link href="/dashboard/projects">
+              <div className="flex flex-col items-center gap-2">
+                <PieChart className="size-6" />
+                <span>Projects</span>
+              </div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="h-24 flex-col gap-2">
+            <Settings className="size-6" />
+            <span>Settings</span>
+          </Button>
+        </div>
       </div>
-    </div>
   );
 }

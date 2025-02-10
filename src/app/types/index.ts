@@ -20,8 +20,14 @@ export interface Project {
   title: string;
   description: string;
   deadline: Date | null;
-  tasks : Task[]
+  tasks : TaskType[]
 }
+
+export type TaskType = Task & {
+  id: number;
+  status: TaskStatus;
+  project: Project;
+};
 
 export interface Task {
   title: string;

@@ -42,7 +42,6 @@ const data = {
       title: "Dashboard",
       url: "/",
       icon: Home,
-      isActive: true,
     },
     {
       title: "Projects",

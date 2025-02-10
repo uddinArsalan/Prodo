@@ -12,36 +12,22 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { getUserTasks, TaskType } from "@/lib/client_data/tasks";
-import { useQuery } from "@tanstack/react-query";
 import { Search, Trash } from "lucide-react";
 import ConfirmationTaskDialog from "@/app/_components/ConfirmationTaskDialog";
 import { useState } from "react";
 import { useTaskUpdateMutation } from "@/hooks/mutations/useUpdateTaskMutation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTask } from "@/hooks/queries/useTask";
+import { useSearchStore } from "@/lib/store/SearchStore";
 
 export default function TasksPage() {
-  const [taskToDelete, setTaskToDelete] = useState<number>();
-  const {
-    data: tasks,
-    isLoading,
-    error,
-  } = useQuery<TaskType[], Error>({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      const response = await getUserTasks();
-      return response;
-    },
-    staleTime: 5000 * 60,
-  });
-
+  const { tasks, isLoading, error } = useTask();
   const { updateTaskStatusMutation } = useTaskUpdateMutation();
+  const { filterTasks, setTaskSearchTerm, taskSearchTerm } = useSearchStore();
   const handleStatusChange = (taskId: number, isChecked: boolean) => {
     updateTaskStatusMutation.mutate({ taskId, isCompleted: isChecked });
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const filteredTasks = filterTasks(tasks || [], taskSearchTerm);
 
   return (
     <div className="p-6 space-y-6">
@@ -51,7 +37,13 @@ export default function TasksPage() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Input placeholder="Search tasks..." className="max-w-sm" />
+        <Input
+          type="text"
+          placeholder="Search tasks..."
+          className="max-w-sm"
+          value={taskSearchTerm}
+          onChange={(e) => setTaskSearchTerm(e.target.value)}
+        />
         <Button variant="outline">
           <Search className="size-4" />
         </Button>
@@ -107,7 +99,7 @@ export default function TasksPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              tasks.map((task) => (
+              filteredTasks.map((task) => (
                 <TableRow key={task.id}>
                   <TableCell className="font-medium">{task.title}</TableCell>
                   <TableCell>{task.project.title}</TableCell>
@@ -126,14 +118,7 @@ export default function TasksPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setTaskToDelete(task.id)}
-                      aria-label="Delete task"
-                    >
-                      <Trash className="size-4 text-red-500" />
-                    </Button>
+                    <ConfirmationTaskDialog taskId={task.id} />
                   </TableCell>
                 </TableRow>
               ))
@@ -141,8 +126,6 @@ export default function TasksPage() {
           </TableBody>
         </Table>
       )}
-
-      {taskToDelete && <ConfirmationTaskDialog taskId={taskToDelete} />}
     </div>
   );
 }

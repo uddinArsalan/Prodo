@@ -29,16 +29,14 @@ export function AddProjectDialog() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState<Date | undefined>(undefined);
-  const { createProjectMutation } = useCreateProjectMutation({
-    closeModal: () => setOpen(false),
-  });
+  const { createProjectMutation } = useCreateProjectMutation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Project Added:", { title, description, deadline });
-    createProjectMutation.mutate({
+    await createProjectMutation.mutateAsync({
       title,
       description,
-      deadline: deadline ? deadline : null,
+      deadline: deadline ? new Date(deadline + "T00:00:00") : null,
     });
     setOpen(false);
     setTitle("");
@@ -100,8 +98,14 @@ export function AddProjectDialog() {
           </Popover>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Save Project
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={createProjectMutation.isPending}
+          >
+            {createProjectMutation.isPending
+              ? "Saving Project"
+              : "Save Project"}
           </Button>
         </DialogFooter>
       </DialogContent>

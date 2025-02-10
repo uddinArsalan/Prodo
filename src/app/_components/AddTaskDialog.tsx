@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Plus } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -29,10 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import { Project } from "../types";
-import { getUserProjects } from "@/lib/client_data/projects";
 import { useCreateTaskMutation } from "@/hooks/mutations/useCreateTaskMutation";
+import { useProject } from "@/hooks/queries/useProject";
+import { format } from "date-fns";
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false);
@@ -40,29 +38,15 @@ export function AddTaskDialog() {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date>();
   const [projectId, setProjectId] = useState<string>();
-  const { createTaskMutation } = useCreateTaskMutation({
-    closeTaskModal: () => setOpen(false),
-  });
+  const { projects } = useProject();
+  const { createTaskMutation } = useCreateTaskMutation();
 
-  const {
-    data: projects,
-    isLoading,
-    error,
-  } = useQuery<Project[], Error>({
-    queryKey: ["projects"],
-    queryFn: async () => {
-      const response = await getUserProjects();
-      return response;
-    },
-    staleTime: 5000 * 60,
-  });
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Task Added:", { title, description, dueDate });
-    createTaskMutation.mutate({
+    await createTaskMutation.mutateAsync({
       title,
       description,
-      dueDate: dueDate ? dueDate : null,
+      dueDate: dueDate ? dueDate: null,
       projectId: Number(projectId),
     });
     setOpen(false);
@@ -138,8 +122,12 @@ export function AddTaskDialog() {
           </Select>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Save Task
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={createTaskMutation.isPending}
+          >
+            {createTaskMutation.isPending ? "Saving Task" : "Save Task"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -4,34 +4,30 @@ import { cookies } from "next/headers";
 import { db } from "@/db";
 import { userModel } from "@/db/schemas/users";
 import { eq } from "drizzle-orm";
-const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY;
-const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
+const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "1h";
+const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
 const accessTokenSecretKey = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET;
 const encodedAccessTokenKey = new TextEncoder().encode(accessTokenSecretKey);
 const encodedRefreshTokenKey = new TextEncoder().encode(refreshTokenSecretKey);
 
 export async function setAccessTokenCookies(accessToken: string) {
-  const accessTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
   const cookieStore = await cookies();
   cookieStore.set("accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    expires: accessTokenExpiry,
     sameSite: "lax",
-    maxAge :  1 * 60 * 60 * 1000,
+    maxAge: 60 * 60 ,
     path: "/",
   });
 }
 
 export async function setRefreshTokenCookies(refreshToken: string) {
-  const refreshTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const cookieStore = await cookies();
   cookieStore.set("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    expires: refreshTokenExpiry,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 ,
     sameSite: "lax",
     path: "/",
   });
@@ -41,13 +37,14 @@ export async function clearTokens() {
   const cookieStore = await cookies();
   cookieStore.delete("accessToken");
   cookieStore.delete("refreshToken");
+  cookieStore.delete("userId");
 }
 
 export async function generateAccessToken(userId: number) {
   return await new jose.SignJWT({ userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime(ACCESS_TOKEN_EXPIRY!)
+    .setExpirationTime(ACCESS_TOKEN_EXPIRY)
     .sign(encodedAccessTokenKey);
 }
 
@@ -55,7 +52,7 @@ export async function generateRefreshToken(userId: number) {
   return await new jose.SignJWT({ userId })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime(REFRESH_TOKEN_EXPIRY!)
+    .setExpirationTime(REFRESH_TOKEN_EXPIRY)
     .sign(encodedRefreshTokenKey);
 }
 
@@ -108,6 +105,10 @@ export async function refreshAccessToken() {
 
   await setAccessTokenCookies(newAccessToken);
   await setRefreshTokenCookies(newRefreshToken);
+  await db
+    .update(userModel)
+    .set({ refreshToken: newRefreshToken })
+    .where(eq(userModel.id, user.id));
 
   return newAccessToken;
 }

@@ -20,10 +20,30 @@ export async function GET(req: NextRequest) {
       .select()
       .from(projectModel)
       .where(eq(projectModel.userId, Number(userId)))
-      .innerJoin(taskModel, eq(taskModel.projectId, projectModel.id));
+      .leftJoin(taskModel, eq(taskModel.projectId, projectModel.id));
+
+    const projectMap = new Map();
+
+    projects.forEach((row) => {
+      const project = row.projects;
+      const task = row.tasks;
+
+      if (!projectMap.has(project.id)) {
+        projectMap.set(project.id, {
+          ...project,
+          tasks: [],
+        });
+      }
+
+      if (task) {
+        projectMap.get(project.id).tasks.push(task);
+      }
+    });
+
+    const transformedProjects = Array.from(projectMap.values());
 
     return NextResponse.json(
-      { success: true, data: projects },
+      { success: true, data: transformedProjects },
       { status: 200 }
     );
   } catch (err) {

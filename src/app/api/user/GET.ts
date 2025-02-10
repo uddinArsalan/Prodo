@@ -2,9 +2,10 @@ import { db } from "@/db";
 import { userModel } from "@/db/schemas/users";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
-  const userId = req.headers.get("userId");
+  const userId = (await cookies()).get("userId")?.value;
 
   if (!userId || isNaN(Number(userId))) {
     return NextResponse.json(
