@@ -17,7 +17,6 @@ import {
   Settings,
 } from "lucide-react";
 import { useTask } from "@/hooks/queries/useTask";
-import { useProject } from "@/hooks/queries/useProject";
 import Link from "next/link";
 import { useMemo } from "react";
 import { TaskType } from "../types";
@@ -107,35 +106,35 @@ export default function DashboardPage() {
       </Card>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
-            <Link href="/calendar">
-              <div className="flex flex-col items-center gap-2">
-                <Calendar className="size-6" />
-                <span>Calendar</span>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
-            <Link href="/dashboard/tasks">
-              <div className="flex flex-col items-center gap-2">
-                <List className="size-6" />
-                <span>Tasks</span>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-24 flex-col gap-2" asChild>
-            <Link href="/dashboard/projects">
-              <div className="flex flex-col items-center gap-2">
-                <PieChart className="size-6" />
-                <span>Projects</span>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-24 flex-col gap-2">
-            <Settings className="size-6" />
-            <span>Settings</span>
-          </Button>
-        </div>
+        <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+          <Link href="/calendar">
+            <div className="flex flex-col items-center gap-2">
+              <Calendar className="size-6" />
+              <span>Calendar</span>
+            </div>
+          </Link>
+        </Button>
+        <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+          <Link href="/dashboard/tasks">
+            <div className="flex flex-col items-center gap-2">
+              <List className="size-6" />
+              <span>Tasks</span>
+            </div>
+          </Link>
+        </Button>
+        <Button variant="outline" className="h-24 flex-col gap-2" asChild>
+          <Link href="/dashboard/projects">
+            <div className="flex flex-col items-center gap-2">
+              <PieChart className="size-6" />
+              <span>Projects</span>
+            </div>
+          </Link>
+        </Button>
+        <Button variant="outline" className="h-24 flex-col gap-2">
+          <Settings className="size-6" />
+          <span>Settings</span>
+        </Button>
       </div>
+    </div>
   );
 }

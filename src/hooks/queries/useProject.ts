@@ -11,7 +11,6 @@ export const useProject = () => {
     queryKey: ["projects"],
     queryFn: async () => {
       const response = await getUserProjects();
-      console.log(response)
       return response;
     },
     staleTime: Infinity,

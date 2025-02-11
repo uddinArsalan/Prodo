@@ -20,7 +20,7 @@ export interface Project {
   title: string;
   description: string;
   deadline: Date | null;
-  tasks : TaskType[]
+  tasks: TaskType[];
 }
 
 export type TaskType = Task & {

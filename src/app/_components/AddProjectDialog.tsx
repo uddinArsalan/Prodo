@@ -36,7 +36,7 @@ export function AddProjectDialog() {
     await createProjectMutation.mutateAsync({
       title,
       description,
-      deadline: deadline ? new Date(deadline + "T00:00:00") : null,
+      deadline: deadline ? deadline : null,
     });
     setOpen(false);
     setTitle("");

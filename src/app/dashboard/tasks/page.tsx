@@ -12,9 +12,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Search, Trash } from "lucide-react";
+import { Search } from "lucide-react";
 import ConfirmationTaskDialog from "@/app/_components/ConfirmationTaskDialog";
-import { useState } from "react";
 import { useTaskUpdateMutation } from "@/hooks/mutations/useUpdateTaskMutation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTask } from "@/hooks/queries/useTask";

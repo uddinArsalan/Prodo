@@ -1,1 +1,1 @@
-export {GET} from "./GET"
+export { GET } from "./GET";

@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(
-  req: NextRequest,
+  _: NextRequest,
   { params }: { params: Promise<{ projectId: number }> }
 ) {
   const userId = (await cookies()).get("userId")?.value;

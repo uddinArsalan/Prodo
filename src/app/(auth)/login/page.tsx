@@ -22,7 +22,7 @@ const LoginPage = () => {
     if (state?.success && state?.redirectTo) {
       router.push(state.redirectTo);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/95 p-4">
@@ -103,7 +103,7 @@ const LoginPage = () => {
 
         <CardFooter className="flex justify-center">
           <p className="text-sm text-zinc-400">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-blue-400 hover:text-blue-300">
               Sign up
             </Link>

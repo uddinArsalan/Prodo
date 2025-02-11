@@ -12,8 +12,7 @@ export type UserInfo = {
 export const useAuthStore = create<UserInfo>()((set) => ({
   userInfo: null,
   isLoggedIn: false,
-  setUserInfo: (userInfo: User) =>
-    set({ userInfo, isLoggedIn: true }),
+  setUserInfo: (userInfo: User) => set({ userInfo, isLoggedIn: true }),
   logout: async () => {
     await logout();
     set({ userInfo: null, isLoggedIn: false });

@@ -11,8 +11,10 @@ export const taskModel = pgTable("tasks", {
   title: t.varchar().notNull(),
   description: t.varchar().notNull(),
   userId: t.integer().references(() => userModel.id, { onDelete: "cascade" }),
-  projectId: t.integer().references(() => projectModel.id, { onDelete: "cascade" }),
+  projectId: t
+    .integer()
+    .references(() => projectModel.id, { onDelete: "cascade" }),
   status: taskStatus().default("pending"),
-  dueDate: t.date({mode : "date"}),
-  ...timestamps
+  dueDate: t.date({ mode: "date" }),
+  ...timestamps,
 });

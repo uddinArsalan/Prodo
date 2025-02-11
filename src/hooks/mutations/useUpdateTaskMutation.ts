@@ -1,6 +1,6 @@
+import { TaskType } from "@/app/types";
 import { changeTaskStatus } from "@/lib/client_data/tasks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 export function useTaskUpdateMutation() {
   const qc = useQueryClient();
@@ -17,8 +17,8 @@ export function useTaskUpdateMutation() {
       await qc.cancelQueries({ queryKey });
       const previousTasks = qc.getQueryData(queryKey);
 
-      qc.setQueryData(["tasks"], (old: any) =>
-        old.map((task: any) =>
+      qc.setQueryData(["tasks"], (old: TaskType[]) =>
+        old.map((task: TaskType) =>
           task.id === taskId
             ? { ...task, status: isCompleted ? "completed" : "pending" }
             : task
@@ -27,7 +27,7 @@ export function useTaskUpdateMutation() {
 
       return { previousTasks };
     },
-    onError: (err, variables, context) => {
+    onError: (_, __, context) => {
       qc.setQueryData(["tasks"], context?.previousTasks);
     },
     onSettled: () => {

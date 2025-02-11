@@ -7,7 +7,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-3 mb-4">
               <CheckCircle className="w-8 h-8 text-primary" strokeWidth={2.5} />
-              <h3 className="text-2xl font-bold text-foreground">TickTick</h3>
+              <h3 className="text-2xl font-bold text-foreground">Prodo</h3>
             </div>
             <p className="text-foreground/70">
               Simplify your work, achieve more.
@@ -55,7 +55,7 @@ const Footer = () => {
         </div>
         <div className="container mx-auto px-6 mt-8 pt-6 border-t border-border text-center">
           <p className="text-foreground/70">
-            © 2025 TickTick. All rights reserved.
+            © 2025 Prodo. All rights reserved.
           </p>
         </div>
       </footer>

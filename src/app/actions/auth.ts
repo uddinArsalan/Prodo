@@ -100,8 +100,8 @@ export async function logout() {
   if (!refreshToken) {
     throw new Error("No refresh token found");
   }
-  let decodedToken = await verifyRefreshToken(refreshToken);
-  let userId = decodedToken?.userId as unknown as number;
+  const decodedToken = await verifyRefreshToken(refreshToken);
+  const userId = decodedToken?.userId as unknown as number;
   if (!userId) {
     throw new Error("Invalid token payload");
   }

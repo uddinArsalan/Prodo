@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Home,
   Folder,
@@ -17,26 +17,24 @@ import {
   ClipboardList,
 } from "lucide-react";
 
-import { NavFavorites } from "@/components/nav-favorites"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavWorkspaces } from "@/components/nav-workspaces"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavFavorites } from "@/components/nav-favorites";
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavWorkspaces } from "@/components/nav-workspaces";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-
+} from "@/components/ui/sidebar";
 
 const data = {
-  teams: 
-    {
-      name: "Personal Task Manager",
-      logo: BarChart,
-      plan: "Personal",
-    },
+  teams: {
+    name: "Personal Task Manager",
+    logo: BarChart,
+    plan: "Personal",
+  },
   navMain: [
     {
       title: "Dashboard",
@@ -46,52 +44,52 @@ const data = {
     {
       title: "Projects",
       url: "projects",
-      icon: Folder, 
+      icon: Folder,
     },
     {
       title: "Tasks",
       url: "tasks",
-      icon: CheckSquare, 
+      icon: CheckSquare,
     },
     {
       title: "Calendar",
       url: "#",
-      icon: Calendar, 
+      icon: Calendar,
     },
     {
       title: "Analytics",
       url: "#",
-      icon: BarChart, 
+      icon: BarChart,
     },
   ],
   navSecondary: [
     {
       title: "Settings",
       url: "#",
-      icon: Settings, 
+      icon: Settings,
     },
     {
       title: "Logout",
       url: "#",
-      icon: LogOut, 
+      icon: LogOut,
     },
   ],
   favorites: [
     {
       name: "Important Tasks",
       url: "#",
-      icon: Star, 
+      icon: Star,
     },
     {
       name: "Upcoming Deadlines",
       url: "#",
-      icon: Clock, 
+      icon: Clock,
     },
   ],
   workspaces: [
     {
       name: "Personal",
-      icon: User, 
+      icon: User,
       pages: [
         {
           name: "Daily Tasks",
@@ -101,30 +99,32 @@ const data = {
         {
           name: "Weekly Goals",
           url: "#",
-          icon: Target, 
+          icon: Target,
         },
       ],
     },
     {
       name: "Work",
-      icon: Flag, 
+      icon: Flag,
       pages: [
         {
           name: "Project Milestones",
           url: "#",
-          icon: Flag, 
+          icon: Flag,
         },
         {
           name: "Meetings",
           url: "#",
-          icon: Calendar, 
+          icon: Calendar,
         },
       ],
     },
   ],
 };
 
-export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SidebarLeft({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar className="border-r-0 " {...props}>
       <SidebarHeader className="">
@@ -133,11 +133,10 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       </SidebarHeader>
       <SidebarContent className="overflow-y-hidden">
         <NavFavorites favorites={data.favorites} />
-        <NavWorkspaces workspaces={data.workspaces} className="mx-auto p-4"/>
+        <NavWorkspaces workspaces={data.workspaces} className="mx-auto p-4" />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
   );
 }
-

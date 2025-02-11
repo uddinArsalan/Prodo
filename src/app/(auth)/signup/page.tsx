@@ -1,6 +1,5 @@
 "use client";
 import React, { useActionState, useEffect } from "react";
-import { useFormState } from "react-dom";
 import {
   Card,
   CardContent,
@@ -22,7 +21,7 @@ const SignupPage = () => {
     if (state?.success && state?.redirectTo) {
       router.push(state.redirectTo);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/95 p-4">

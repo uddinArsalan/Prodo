@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Trash } from "lucide-react";
-import { useState } from "react";
+import { Search } from "lucide-react";
 import { useProject } from "@/hooks/queries/useProject";
 import { useSearchStore } from "@/lib/store/SearchStore";
 import { format } from "date-fns";
@@ -23,7 +22,6 @@ export default function ProjectsPage() {
     useSearchStore();
 
   const filteredProjects = filterProjects(projects || [], projectSearchTerm);
-  console.log(filteredProjects);
 
   return (
     <div className="p-6 space-y-6">
@@ -91,7 +89,7 @@ export default function ProjectsPage() {
                     <CardDescription className="text-sm text-gray-500">
                       {project.description}
                     </CardDescription>
-           
+
                     <div className="text-sm text-gray-600">
                       <span className="font-medium">Deadline:</span>{" "}
                       {project.deadline ? (

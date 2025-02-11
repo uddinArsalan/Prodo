@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Briefcase, ChevronRight, Shield, Zap } from "lucide-react";
+import { Briefcase, Shield, Zap } from "lucide-react";
 
 const BenefitsSection = () => {
     const benefits = [

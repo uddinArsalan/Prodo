@@ -6,7 +6,7 @@ export function useCreateProjectMutation() {
   const qc = useQueryClient();
   const queryKey = ["projects"];
   const createProjectMutation = useMutation({
-    mutationFn: async ( newProject : Partial<Project> ) => {
+    mutationFn: async (newProject: Partial<Project>) => {
       try {
         const res = await axios.post("/api/projects", newProject, {
           headers: { "Content-Type": "application/json" },
@@ -18,7 +18,7 @@ export function useCreateProjectMutation() {
         throw error;
       }
     },
-    onSuccess: (createdProject) => {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey });
     },
     onError: (error) => {

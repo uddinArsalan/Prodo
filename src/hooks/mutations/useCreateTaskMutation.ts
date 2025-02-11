@@ -6,7 +6,7 @@ export function useCreateTaskMutation() {
   const qc = useQueryClient();
   const queryKey = ["tasks"];
   const createTaskMutation = useMutation({
-    mutationFn: async (newTask : Task) => {
+    mutationFn: async (newTask: Task) => {
       try {
         const res = await axios.post("/api/tasks", newTask, {
           headers: { "Content-Type": "application/json" },
@@ -17,7 +17,7 @@ export function useCreateTaskMutation() {
         throw error;
       }
     },
-    onSuccess: (createdProject) => {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey });
     },
     onError: (error) => {

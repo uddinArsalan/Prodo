@@ -2,10 +2,10 @@ import { db } from "@/db";
 import { projectModel } from "@/db/schemas/projects";
 import { taskModel } from "@/db/schemas/tasks";
 import { eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const userId = (await cookies()).get("userId")?.value;
 
   if (!userId || isNaN(Number(userId))) {

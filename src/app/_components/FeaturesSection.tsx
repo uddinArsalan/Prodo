@@ -28,7 +28,7 @@ const FeaturesSection = () => {
               Powerful Features
             </h2>
             <p className="text-foreground/70 max-w-2xl mx-auto">
-              TickTick provides a comprehensive suite of tools to supercharge your productivity.
+              Prodo provides a comprehensive suite of tools to supercharge your productivity.
             </p>
           </div>
           

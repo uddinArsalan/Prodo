@@ -17,7 +17,7 @@ export async function setAccessTokenCookies(accessToken: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 ,
+    maxAge: 60 * 60,
     path: "/",
   });
 }
@@ -27,7 +27,7 @@ export async function setRefreshTokenCookies(refreshToken: string) {
   cookieStore.set("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 7 * 24 * 60 * 60 ,
+    maxAge: 7 * 24 * 60 * 60,
     sameSite: "lax",
     path: "/",
   });
@@ -61,6 +61,7 @@ export async function verifyAccessToken(token: string) {
     const { payload } = await jose.jwtVerify(token, encodedAccessTokenKey);
     return payload;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
@@ -70,6 +71,7 @@ export async function verifyRefreshToken(token: string) {
     const { payload } = await jose.jwtVerify(token, encodedRefreshTokenKey);
     return payload;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
