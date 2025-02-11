@@ -7,7 +7,6 @@ import {
   CheckSquare,
   Calendar,
   BarChart,
-  Settings,
   LogOut,
   Star,
   Clock,
