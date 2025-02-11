@@ -31,6 +31,7 @@ import {
 import { useCreateTaskMutation } from "@/hooks/mutations/useCreateTaskMutation";
 import { useProject } from "@/hooks/queries/useProject";
 import { format } from "date-fns";
+import { TaskPriority } from "../types";
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false);
@@ -38,23 +39,29 @@ export function AddTaskDialog() {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date>();
   const [projectId, setProjectId] = useState<string>();
-  const { projects } = useProject();
+  const [categoryId, setCategoryId] = useState<string>();
+  const [priority, setPriority] = useState<TaskPriority>("medium");
+  const { projects,categories } = useProject();
   const { createTaskMutation } = useCreateTaskMutation();
 
   const handleSubmit = async () => {
-    console.log("Task Added:", { title, description, dueDate });
+    console.log("Task Added:", { title, description, dueDate, priority, categoryId });
     await createTaskMutation.mutateAsync({
       title,
       description,
-      dueDate: dueDate ? dueDate: null,
+      dueDate: dueDate ? dueDate : null,
       projectId: Number(projectId),
+      priority, 
+      categoryId: categoryId ? Number(categoryId) : null,
     });
     setOpen(false);
     setTitle("");
     setDescription("");
     setDueDate(undefined);
     setProjectId("");
-  };
+    setPriority("medium");
+    setCategoryId(""); 
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -116,6 +123,28 @@ export function AddTaskDialog() {
               {projects?.map((project) => (
                 <SelectItem key={project.id} value={String(project.id)}>
                   {project.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={priority} onValueChange={(value) => setPriority(value as TaskPriority)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={categoryId} onValueChange={setCategoryId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((category) => (
+                <SelectItem key={category.id} value={String(category.id)}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>

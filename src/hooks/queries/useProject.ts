@@ -1,5 +1,5 @@
-import { Project } from "@/app/types";
-import { getUserProjects } from "@/lib/client_data/projects";
+import { Category, Project } from "@/app/types";
+import { getCategories, getUserProjects } from "@/lib/client_data/projects";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProject = () => {
@@ -15,5 +15,14 @@ export const useProject = () => {
     },
     staleTime: Infinity,
   });
-  return { projects, isLoading, error };
+  
+  const { data: categories } = useQuery<Category[], Error>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await getCategories();
+      return response;
+    },
+    staleTime: Infinity,
+  });
+  return { projects, categories, isLoading, error };
 };

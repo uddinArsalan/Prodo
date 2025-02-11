@@ -11,7 +11,10 @@ export async function PATCH(
     const { isCompleted } = await req.json();
     const status = isCompleted ? "completed" : "pending";
     const { taskId } = await params;
-    await db.update(taskModel).set({ status }).where(eq(taskModel.id, taskId));
+    await db
+      .update(taskModel)
+      .set({ status, updated_at: new Date() })
+      .where(eq(taskModel.id, taskId));
     return NextResponse.json(
       { success: true, message: "Task status updated successfully" },
       { status: 200 }

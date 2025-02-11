@@ -3,7 +3,8 @@ import axios from "axios";
 
 export function useTaskDeleteMutation({ taskId }: { taskId: number }) {
   const qc = useQueryClient();
-  const queryKey = ["tasks"];
+  const queryKey1 = ["tasks"];
+  const queryKey2 = ["projects"];
   const deleteTaskMutation = useMutation({
     mutationFn: async () => {
       try {
@@ -18,7 +19,8 @@ export function useTaskDeleteMutation({ taskId }: { taskId: number }) {
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey });
+      qc.invalidateQueries({ queryKey : queryKey1 });
+      qc.invalidateQueries({ queryKey : queryKey2 });
     },
     onError: (error) => {
       console.log(error);

@@ -14,7 +14,7 @@ export const useAuthStore = create<UserInfo>()((set) => ({
   isLoggedIn: false,
   setUserInfo: (userInfo: User) => set({ userInfo, isLoggedIn: true }),
   logout: async () => {
-    await logout();
     set({ userInfo: null, isLoggedIn: false });
+    await logout();
   },
 }));

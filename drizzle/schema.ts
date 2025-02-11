@@ -1,6 +1,7 @@
 import { pgTable, uniqueIndex, unique, integer, varchar, timestamp, foreignKey, date, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
+export const medium = pgEnum("medium", ['low', 'medium', 'high'])
 export const role = pgEnum("role", ['user', 'admin', 'guest'])
 export const status = pgEnum("status", ['completed', 'pending'])
 
@@ -48,6 +49,8 @@ export const tasks = pgTable("tasks", {
 	updatedAt: timestamp("updated_at", { mode: 'string' }),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	deletedAt: timestamp("deleted_at", { mode: 'string' }),
+	categoryId: integer(),
+	priority: varchar().default('medium'),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],
@@ -59,4 +62,17 @@ export const tasks = pgTable("tasks", {
 			foreignColumns: [projects.id],
 			name: "tasks_projectId_projects_id_fk"
 		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.categoryId],
+			foreignColumns: [categories.id],
+			name: "tasks_categoryId_categories_id_fk"
+		}).onDelete("set null"),
 ]);
+
+export const categories = pgTable("categories", {
+	id: integer().primaryKey().generatedAlwaysAsIdentity({ name: "categories_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
+	name: varchar().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	deletedAt: timestamp("deleted_at", { mode: 'string' }),
+});

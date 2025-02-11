@@ -1,11 +1,5 @@
-import { Project, Task, TaskStatus } from "@/app/types";
+import { TaskType } from "@/app/types";
 import axios from "axios";
-
-export type TaskType = Task & {
-  id: number;
-  status: TaskStatus;
-  project: Project;
-};
 
 export async function getUserTasks() {
   try {

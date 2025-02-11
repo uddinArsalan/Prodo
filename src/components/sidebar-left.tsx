@@ -51,26 +51,12 @@ const data = {
       url: "tasks",
       icon: CheckSquare,
     },
-    {
-      title: "Calendar",
-      url: "#",
-      icon: Calendar,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChart,
-    },
+    
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
-    },
-    {
       title: "Logout",
-      url: "#",
+      url: "/",
       icon: LogOut,
     },
   ],

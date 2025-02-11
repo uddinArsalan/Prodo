@@ -107,7 +107,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Button variant="outline" className="h-24 flex-col gap-2" asChild>
-          <Link href="/calendar">
+          <Link href="/dashboard">
             <div className="flex flex-col items-center gap-2">
               <Calendar className="size-6" />
               <span>Calendar</span>
@@ -129,10 +129,6 @@ export default function DashboardPage() {
               <span>Projects</span>
             </div>
           </Link>
-        </Button>
-        <Button variant="outline" className="h-24 flex-col gap-2">
-          <Settings className="size-6" />
-          <span>Settings</span>
         </Button>
       </div>
     </div>

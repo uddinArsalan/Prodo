@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { title, description, projectId, dueDate } = await req.json();
+    const { title, description, projectId, dueDate,priority,categoryId } = await req.json();
     if (!title || !description) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
@@ -27,6 +27,8 @@ export async function POST(req: NextRequest) {
       userId: Number(userId),
       dueDate: new Date(dueDate),
       projectId,
+      priority,
+      categoryId
     });
     return NextResponse.json(
       { success: true, message: "Task created successfully" },

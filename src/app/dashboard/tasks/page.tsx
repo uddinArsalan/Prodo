@@ -65,6 +65,8 @@ export default function TasksPage() {
             <TableRow>
               <TableHead>Task</TableHead>
               <TableHead>Project</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Priority</TableHead>
               <TableHead>Due Date</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
@@ -87,13 +89,19 @@ export default function TasksPage() {
                     <Skeleton className="h-4 w-16" />
                   </TableCell>
                   <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
                     <Skeleton className="h-8 w-8 rounded-full" />
                   </TableCell>
                 </TableRow>
               ))
             ) : !tasks || tasks.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-gray-500">
+                <TableCell colSpan={7} className="text-center text-gray-500">
                   No tasks found. Start by adding a new task!
                 </TableCell>
               </TableRow>
@@ -102,6 +110,8 @@ export default function TasksPage() {
                 <TableRow key={task.id}>
                   <TableCell className="font-medium">{task.title}</TableCell>
                   <TableCell>{task.project.title}</TableCell>
+                  <TableCell>{task.category?.name || "Uncategorized"}</TableCell>
+                  <TableCell>{task.priority}</TableCell>
                   <TableCell>
                     {format(new Date(task.dueDate!), "MM/dd/yyyy")}
                   </TableCell>

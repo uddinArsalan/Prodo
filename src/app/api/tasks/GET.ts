@@ -4,6 +4,7 @@ import { taskModel } from "@/db/schemas/tasks";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { categoryModel } from "@/db/schemas/categories";
 
 export async function GET() {
   const userId = (await cookies()).get("userId")?.value;
@@ -20,11 +21,13 @@ export async function GET() {
       .select()
       .from(taskModel)
       .where(eq(taskModel.userId, Number(userId)))
-      .leftJoin(projectModel, eq(projectModel.id, taskModel.projectId));
-
+      .leftJoin(projectModel, eq(projectModel.id, taskModel.projectId))
+      .leftJoin(categoryModel, eq(categoryModel.id, taskModel.categoryId));
+      
     const transformedTasks = tasks.map((row) => ({
       ...row.tasks,
       project: { ...row.projects },
+      category: { ...row.categories },
     }));
 
     return NextResponse.json(

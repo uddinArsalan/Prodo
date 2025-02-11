@@ -15,6 +15,7 @@ import { Search } from "lucide-react";
 import { useProject } from "@/hooks/queries/useProject";
 import { useSearchStore } from "@/lib/store/SearchStore";
 import { format } from "date-fns";
+import Link from "next/link";
 
 export default function ProjectsPage() {
   const { projects, isLoading, error } = useProject();
@@ -46,11 +47,7 @@ export default function ProjectsPage() {
       {error ? (
         <div className="text-center text-red-500">
           <p>Failed to load projects. Please try again.</p>
-          <Button
-            variant="outline"
-            onClick={() => window.location.reload()}
-            className="mt-2"
-          >
+          <Button variant="outline" onClick={() => window.location.reload()} className="mt-2">
             Retry
           </Button>
         </div>
@@ -77,10 +74,7 @@ export default function ProjectsPage() {
             </p>
           ) : (
             filteredProjects.map((project) => (
-              <Card
-                key={project.id}
-                className="hover:shadow-lg transition-shadow duration-300"
-              >
+              <Card key={project.id} className="hover:shadow-lg transition-shadow duration-300">
                 <CardHeader className="flex flex-row justify-between items-start p-4">
                   <div className="space-y-2">
                     <CardTitle className="text-lg font-semibold">
@@ -102,9 +96,11 @@ export default function ProjectsPage() {
                   <ConfirmationProjectDialog projectId={project.id} />
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <p className="text-sm text-muted-foreground">
-                    {project.tasks?.length ?? "No"} tasks
-                  </p>
+                  <Link href={`/dashboard/projects/${project.id}`}>
+                    <Button variant="outline" className="w-full">
+                      View Tasks ({project.tasks?.length ?? 0})
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))

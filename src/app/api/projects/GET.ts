@@ -4,6 +4,7 @@ import { taskModel } from "@/db/schemas/tasks";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { categoryModel } from "@/db/schemas/categories";
 
 export async function GET() {
   const userId = (await cookies()).get("userId")?.value;
@@ -20,27 +21,35 @@ export async function GET() {
       .select()
       .from(projectModel)
       .where(eq(projectModel.userId, Number(userId)))
-      .leftJoin(taskModel, eq(taskModel.projectId, projectModel.id));
+      .leftJoin(taskModel, eq(taskModel.projectId, projectModel.id))
+      .leftJoin(categoryModel,eq(taskModel.categoryId,categoryModel.id))
+      ;
 
-    const projectMap = new Map();
+      const projectMap = new Map();
 
-    projects.forEach((row) => {
-      const project = row.projects;
-      const task = row.tasks;
-
-      if (!projectMap.has(project.id)) {
-        projectMap.set(project.id, {
-          ...project,
-          tasks: [],
-        });
-      }
-
-      if (task) {
-        projectMap.get(project.id).tasks.push(task);
-      }
-    });
-
-    const transformedProjects = Array.from(projectMap.values());
+      projects.forEach((row) => {
+        const project = row.projects;
+        const task = row.tasks;
+        const category = row.categories; 
+      
+        if (!projectMap.has(project.id)) {
+          projectMap.set(project.id, {
+            ...project,
+            tasks: [],
+          });
+        }
+      
+        if (task) {
+          
+          const taskWithCategory = {
+            ...task,
+            category: category || null, 
+          };
+          projectMap.get(project.id).tasks.push(taskWithCategory);
+        }
+      });
+      
+      const transformedProjects = Array.from(projectMap.values());
 
     return NextResponse.json(
       { success: true, data: transformedProjects },
