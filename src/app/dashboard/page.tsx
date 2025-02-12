@@ -7,15 +7,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import {
-  Calendar,
-  CheckCircle,
-  Clock,
-  List,
-  PieChart,
-  Plus,
-  Settings,
-} from "lucide-react";
+import { Calendar, CheckCircle, Clock, List, PieChart } from "lucide-react";
 import { useTask } from "@/hooks/queries/useTask";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -23,6 +15,7 @@ import { TaskType } from "../types";
 import { StatCard } from "../_components/StatCard";
 import { TaskItem } from "../_components/TaskItem";
 import { ProjectProgress } from "../_components/ProjectProgress";
+import { AddTaskDialog } from "../_components/AddTaskDialog";
 
 export default function DashboardPage() {
   const { tasks } = useTask();
@@ -60,14 +53,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
-            <Settings className="mr-2 size-4" />
-            Settings
-          </Button>
-          <Button>
-            <Plus className="mr-2 size-4" />
-            New Task
-          </Button>
+          <AddTaskDialog />
         </div>
       </div>
 
